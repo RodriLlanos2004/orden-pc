@@ -1,0 +1,631 @@
+@import "tailwindcss";
+@import "@fontsource-variable/martian-mono/wdth.css";
+@import "@fontsource-variable/geist";
+
+/* Tokens documentados en docs/design-system.md
+   Consola retro futurista de los años 60: amarillo crema, blancos y grises cálidos; casi nada de negro.
+   Tres papeles para el amarillo:
+   --amarillo es el relleno crema (botones, sección activa, selección) y lleva texto grafito encima;
+   --amarillo-fuerte es la tinta de datos (barras, bloques del treemap), más intensa para que se vea sobre crema;
+   --acento es tinta legible sobre el fondo: cifras, enlaces, bordes y foco (ocre en claro, crema en grafito). */
+:root {
+  --fondo: #f3f0e7;
+  --superficie: #fbfaf5;
+  --superficie-2: #e8e3d5;
+  --tarjeta: #f1e3b3;
+  --linea: #d8d1bf;
+  --display: #2a2824;
+  --texto: #2a2824;
+  --tenue: #686354;
+  --acento: #7d6420;
+  --amarillo: #f2d98a;
+  --amarillo-fuerte: #d9b550;
+  --amarillo-suave: #f8edc8;
+  --acento-texto: #2a2824;
+  --particula: #b7b0a0;
+  --horizonte: #f3e2a6;
+  --cambios: #a2501d;
+  --protegido: #6b4e8c;
+  --error: #a63a2c;
+  --error-texto: #fbfaf5;
+  --regenerable: #5d6670;
+  --exito: #4a6b39;
+  --nube: #3d6a8c;
+  /* Árbol de circuito: pistas en grises cálidos, follaje en amarillo pastel, chispa casi blanca */
+  --traza: #8c8577;
+  --traza-2: #b8b1a1;
+  --hoja-a: #ecd38a;
+  --hoja-b: #d8bc6a;
+  --chispa: #fff4c8;
+  color-scheme: light;
+}
+
+/* Grafito cálido, no negro. */
+:root[data-theme="dark"] {
+  --fondo: #21201c;
+  --superficie: #2a2925;
+  --superficie-2: #35332d;
+  --tarjeta: #3b3727;
+  --linea: #46433a;
+  --display: #f7f0dc;
+  --texto: #ece6d5;
+  --tenue: #a9a291;
+  --acento: #f2da8e;
+  --amarillo: #f0d485;
+  --amarillo-fuerte: #e6c766;
+  --amarillo-suave: #3a3420;
+  --acento-texto: #24221e;
+  --particula: #77725f;
+  --horizonte: #4a4226;
+  --cambios: #e9a36d;
+  --protegido: #bca6d9;
+  --error: #e8907f;
+  --error-texto: #24221e;
+  --regenerable: #a9b2bc;
+  --exito: #abc98e;
+  --nube: #9cc3df;
+  --traza: #a59d8a;
+  --traza-2: #6f6a5d;
+  --hoja-a: #e9cf7f;
+  --hoja-b: #c9ad5d;
+  --chispa: #fff1bd;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-fondo: var(--fondo);
+  --color-superficie: var(--superficie);
+  --color-superficie-2: var(--superficie-2);
+  --color-tarjeta: var(--tarjeta);
+  --color-linea: var(--linea);
+  --color-display: var(--display);
+  --color-texto: var(--texto);
+  --color-tenue: var(--tenue);
+  --color-acento: var(--acento);
+  --color-acento-texto: var(--acento-texto);
+  --color-amarillo: var(--amarillo);
+  --color-amarillo-suave: var(--amarillo-suave);
+  --color-amarillo-fuerte: var(--amarillo-fuerte);
+  --color-nube: var(--nube);
+  --color-cambios: var(--cambios);
+  --color-protegido: var(--protegido);
+  --color-error: var(--error);
+  --color-error-texto: var(--error-texto);
+  --color-regenerable: var(--regenerable);
+  --color-exito: var(--exito);
+  --font-sans: "Geist Variable", system-ui, sans-serif;
+  --font-mono: "Martian Mono Variable", ui-monospace, monospace;
+}
+
+/* Escala: 12 / 14 / 16 / 21 / 28 / 44, y el titular fluido de sección */
+@theme {
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.3125rem;
+  --text-xl: 1.75rem;
+  --text-2xl: 2.75rem;
+  --ease-orden: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html,
+body {
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Titular de sección: monoespaciada ancha en mayúsculas, como un rótulo de archivo. */
+.titular {
+  font-family: var(--font-mono);
+  font-stretch: 112.5%;
+  font-weight: 500;
+  text-transform: uppercase;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  color: var(--display);
+  font-size: clamp(2.25rem, 5.6vw, 5.5rem);
+}
+
+.cifra {
+  font-family: var(--font-mono);
+  font-stretch: 100%;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Botones y campos: un solo lugar para su forma. Secundario con borde, primario crema, peligro, icono y enlace. */
+@utility boton {
+  @apply inline-flex min-h-9 shrink-0 items-center justify-center gap-2 rounded-md border border-linea px-3.5 text-sm text-texto transition-colors hover:border-tenue disabled:pointer-events-none disabled:opacity-40 disabled:shadow-none;
+}
+@utility boton-primario {
+  @apply boton border-transparent bg-amarillo font-medium text-acento-texto hover:border-transparent;
+}
+@utility boton-peligro {
+  @apply boton border-transparent bg-error font-medium text-error-texto hover:border-transparent;
+}
+@utility boton-icono {
+  @apply grid size-8 shrink-0 place-items-center rounded-md text-tenue transition-colors hover:bg-superficie-2 hover:text-texto disabled:pointer-events-none disabled:opacity-30;
+}
+@utility enlace {
+  @apply inline-flex min-h-6 items-center gap-1.5 text-texto underline decoration-acento underline-offset-4;
+}
+@utility campo {
+  @apply w-full rounded-md border border-linea bg-fondo px-3 py-2 text-sm text-texto placeholder:text-tenue/70 disabled:opacity-50;
+}
+
+/* Rellenos crema con canto inferior, como las teclas de una consola. */
+.bg-amarillo,
+.boton-primario {
+  box-shadow:
+    inset 0 0 0 1px rgb(42 40 36 / 0.1),
+    inset 0 -2px 0 rgb(42 40 36 / 0.14),
+    inset 0 1px 0 rgb(255 255 255 / 0.45),
+    0 6px 16px -9px color-mix(in oklab, var(--amarillo-fuerte) 80%, transparent);
+}
+
+/* ---------------------------------------------------------------- profundidad
+   Luz cálida desde arriba y bordes apenas en sombra.
+   Las superficies se leen elevadas: un brillo en su canto superior y sombras en capas (contacto y ambiente).
+   Nada se pinta encima del árbol: sin grano de película ni degradados sobre el escenario. */
+body {
+  background:
+    radial-gradient(ellipse 70% 45% at 50% -8%, color-mix(in oklab, var(--amarillo-suave) 85%, transparent), transparent 70%),
+    radial-gradient(ellipse 130% 95% at 50% 35%, transparent 55%, color-mix(in oklab, var(--display) 7%, transparent) 100%),
+    var(--fondo);
+  min-height: 100dvh;
+}
+.bg-superficie {
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.6),
+    0 1px 2px rgb(42 40 36 / 0.06),
+    0 12px 28px -16px rgb(42 40 36 / 0.25);
+}
+.bg-tarjeta {
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.55),
+    0 2px 4px rgb(42 40 36 / 0.06),
+    0 22px 40px -22px rgb(42 40 36 / 0.35);
+}
+:root[data-theme="dark"] .bg-superficie,
+:root[data-theme="dark"] .bg-tarjeta {
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.06),
+    0 1px 2px rgb(0 0 0 / 0.3),
+    0 16px 32px -16px rgb(0 0 0 / 0.6);
+}
+/* Vidrio: para lo que flota sobre el escenario del árbol. */
+.cristal {
+  background: color-mix(in oklab, var(--superficie) 62%, transparent);
+  backdrop-filter: blur(10px) saturate(1.15);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.45),
+    0 0 0 1px color-mix(in oklab, var(--linea) 70%, transparent);
+}
+/* Escenario del árbol: su propia luz, que se funde con la página en los bordes. */
+.escenario {
+  background: radial-gradient(ellipse 75% 70% at 50% 58%, color-mix(in oklab, var(--superficie) 95%, var(--amarillo-suave)) 0%, var(--fondo) 82%);
+}
+
+/* Tarjetas del árbol (dentro de la composición de Remotion): botones reales, sin estilo de navegador. */
+.arbol-nodo {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.arbol-nodo:focus-visible {
+  outline: 3px solid var(--acento);
+  outline-offset: 3px;
+}
+
+/* Un nodo y su etiqueta responden juntos: acercarte a cualquiera de los dos los despierta a ambos.
+   La etiqueta crece hacia afuera desde su nodo, se ilumina el canto y la flecha avanza;
+   el nodo late con anillos crema mientras lo señalas. Al presionar, la etiqueta se hunde. */
+.arbol-par {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.arbol-par > * {
+  pointer-events: auto;
+}
+.arbol-etiqueta {
+  display: flex;
+  flex-direction: column;
+  max-width: 190px;
+  padding: 3px 10px;
+  border-radius: 8px;
+  color: var(--texto);
+  background: color-mix(in oklab, var(--superficie) 86%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--hoja-b) 35%, transparent),
+    0 8px 20px -10px rgb(42 40 36 / 0.45);
+  backdrop-filter: blur(6px);
+  transition:
+    scale 0.45s var(--resorte),
+    box-shadow 0.3s var(--suave),
+    background-color 0.25s;
+}
+.arbol-par:hover .arbol-etiqueta,
+.arbol-etiqueta:focus-visible {
+  scale: 1.08;
+  background: var(--superficie);
+  box-shadow:
+    0 0 0 2px var(--amarillo-fuerte),
+    0 16px 30px -12px color-mix(in oklab, var(--amarillo-fuerte) 75%, transparent);
+}
+.arbol-etiqueta:active {
+  scale: 0.95;
+  transition-duration: 0.08s;
+}
+.arbol-flecha {
+  display: inline-block;
+  margin-left: 0.3em;
+  color: var(--tenue);
+  transition:
+    translate 0.4s var(--resorte),
+    color 0.2s;
+}
+.arbol-par:hover .arbol-flecha {
+  translate: 4px 0;
+  color: var(--acento);
+}
+.arbol-toque {
+  border-radius: 50%;
+}
+.arbol-toque::before,
+.arbol-toque::after {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--amarillo-fuerte);
+  opacity: 0;
+  pointer-events: none;
+}
+.arbol-par:hover .arbol-toque::before {
+  animation: latido 1.4s var(--suave) infinite;
+}
+.arbol-par:hover .arbol-toque::after {
+  animation: latido 1.4s var(--suave) 0.7s infinite;
+}
+@keyframes latido {
+  0% {
+    opacity: 0.9;
+    scale: 0.6;
+  }
+  100% {
+    opacity: 0;
+    scale: 1.7;
+  }
+}
+.arbol-placa {
+  transition:
+    scale 0.45s var(--resorte),
+    box-shadow 0.3s var(--suave);
+}
+.arbol-placa:hover {
+  scale: 1.04;
+  box-shadow:
+    0 0 0 2px var(--amarillo-fuerte),
+    0 14px 28px -14px color-mix(in oklab, var(--amarillo-fuerte) 70%, transparent);
+}
+.arbol-placa:active {
+  scale: 0.97;
+  transition-duration: 0.08s;
+}
+
+/* ---------------------------------------------------------------- movimiento
+   Cada botón es una tecla de consola: se eleva al acercarte, se hunde al presionar y vuelve con resorte.
+   Cada ícono hace un gesto que cuenta su acción (la flecha avanza, la papelera tiembla, la X gira).
+   Todo responde a lo que haces; nada se mueve solo. Con "movimiento reducido" no hay nada de esto. */
+:root {
+  --resorte: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --suave: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.boton,
+.boton-primario,
+.boton-peligro,
+.boton-icono {
+  transition:
+    translate 0.4s var(--resorte),
+    scale 0.4s var(--resorte),
+    box-shadow 0.3s var(--suave),
+    background-color 0.25s,
+    border-color 0.25s,
+    color 0.25s;
+}
+:is(.boton, .boton-primario, .boton-peligro):hover:not(:disabled) {
+  translate: 0 -2px;
+}
+.boton:hover:not(:disabled) {
+  box-shadow: 0 10px 20px -14px rgb(42 40 36 / 0.5);
+}
+.boton-primario:hover:not(:disabled) {
+  box-shadow:
+    inset 0 0 0 1px rgb(42 40 36 / 0.1),
+    inset 0 -2px 0 rgb(42 40 36 / 0.14),
+    inset 0 1px 0 rgb(255 255 255 / 0.5),
+    0 12px 26px -10px color-mix(in oklab, var(--amarillo-fuerte) 95%, transparent);
+}
+/* Al presionar, la tecla baja hasta el fondo: el canto desaparece. */
+:is(.boton, .boton-primario, .boton-peligro):active:not(:disabled) {
+  translate: 0 1px;
+  scale: 0.97;
+  transition-duration: 0.08s;
+}
+.boton-primario:active:not(:disabled) {
+  box-shadow: inset 0 2px 3px rgb(42 40 36 / 0.22);
+}
+.boton-icono:hover:not(:disabled) {
+  scale: 1.08;
+}
+.boton-icono:active:not(:disabled) {
+  scale: 0.9;
+  transition-duration: 0.08s;
+}
+
+/* Un destello cruza las teclas crema al pasar el cursor. */
+.boton-primario,
+.boton-peligro {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+:is(.boton-primario, .boton-peligro)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.55) 50%, transparent 65%);
+  translate: -120% 0;
+}
+:is(.boton-primario, .boton-peligro):hover:not(:disabled)::after {
+  animation: barrido 0.9s var(--suave);
+}
+@keyframes barrido {
+  to {
+    translate: 120% 0;
+  }
+}
+
+/* El gesto de cada ícono. Por defecto crece un poco; los que tienen una acción clara la actúan. */
+:is(button, a) .lucide {
+  transition:
+    transform 0.45s var(--resorte),
+    rotate 0.45s var(--resorte);
+}
+:is(button, a):hover:not(:disabled) .lucide {
+  transform: scale(1.12);
+}
+:is(button, a):hover:not(:disabled) :is(.lucide-arrow-right, .lucide-chevron-right) {
+  transform: translateX(3px);
+}
+:is(button, a):hover:not(:disabled) .lucide-arrow-left {
+  transform: translateX(-3px);
+}
+:is(button, a):hover:not(:disabled) .lucide-arrow-up {
+  transform: translateY(-3px);
+}
+:is(button, a):hover:not(:disabled) :is(.lucide-download, .lucide-chevron-down) {
+  transform: translateY(2px);
+}
+:is(button, a):hover:not(:disabled) :is(.lucide-x, .lucide-plus) {
+  transform: rotate(90deg);
+}
+:is(button, a):hover:not(:disabled) :is(.lucide-refresh-cw, .lucide-radar) {
+  transform: rotate(180deg);
+}
+:is(button, a):hover:not(:disabled) .lucide-rotate-ccw {
+  transform: rotate(-120deg);
+}
+:is(button, a):hover:not(:disabled) :is(.lucide-pencil, .lucide-pencil-line, .lucide-wand-2, .lucide-wand-sparkles) {
+  transform: rotate(-14deg) scale(1.1);
+}
+:is(button, a):hover:not(:disabled) :is(.lucide-sun) {
+  transform: rotate(45deg);
+}
+:is(button, a):hover:not(:disabled) :is(.lucide-moon) {
+  transform: rotate(-20deg) scale(1.1);
+}
+:is(button, a):hover:not(:disabled) :is(.lucide-trash-2, .lucide-lock) {
+  transform: none;
+  animation: sacude 0.5s var(--suave);
+}
+:is(button, a):hover:not(:disabled) .lucide-sparkles {
+  transform: none;
+  animation: titila 0.9s var(--suave);
+}
+@keyframes sacude {
+  20% {
+    transform: rotate(-12deg);
+  }
+  45% {
+    transform: rotate(10deg);
+  }
+  70% {
+    transform: rotate(-5deg);
+  }
+}
+@keyframes titila {
+  40% {
+    transform: scale(1.3) rotate(20deg);
+  }
+  70% {
+    transform: scale(0.95) rotate(-6deg);
+  }
+}
+
+/* Los enlaces separan su subrayado al acercarte. */
+.enlace {
+  transition:
+    text-underline-offset 0.3s var(--resorte),
+    text-decoration-thickness 0.3s,
+    color 0.2s;
+}
+.enlace:hover {
+  text-underline-offset: 7px;
+  text-decoration-thickness: 2px;
+}
+
+/* El foco llega desde afuera y se ajusta, como un visor. */
+:focus-visible {
+  animation: enfoca 0.35s var(--resorte);
+}
+@keyframes enfoca {
+  from {
+    outline-offset: 9px;
+    outline-color: transparent;
+  }
+}
+
+/* Casillas que responden: se hunden al tocarlas y rebotan al marcarse. */
+input[type="checkbox"] {
+  transition: scale 0.3s var(--resorte);
+}
+input[type="checkbox"]:active {
+  scale: 0.85;
+}
+input[type="checkbox"]:checked {
+  animation: marca 0.35s var(--resorte);
+}
+@keyframes marca {
+  45% {
+    scale: 1.22;
+  }
+}
+
+/* Campos: un halo crema cuando escribes en ellos. */
+:is(.campo, select, .campo-busqueda) {
+  transition:
+    border-color 0.2s,
+    box-shadow 0.3s var(--suave);
+}
+:is(.campo, select, .campo-busqueda):focus {
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--amarillo) 45%, transparent);
+}
+
+/* Ayudas: el nombre de un botón de solo ícono aparece al acercarte o al llegar con el teclado.
+   Los botones de ícono la toman de su aria-label, así ninguno queda mudo. */
+:is([data-tip], .boton-icono[aria-label]) {
+  position: relative;
+}
+.boton-icono[aria-label]::before {
+  content: attr(aria-label);
+}
+[data-tip]::before {
+  content: attr(data-tip);
+}
+:is([data-tip], .boton-icono[aria-label])::before {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  z-index: 70;
+  translate: -50% 6px;
+  white-space: nowrap;
+  border-radius: 6px;
+  padding: 4px 9px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--fondo);
+  background: var(--display);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.2s,
+    translate 0.35s var(--resorte);
+}
+:is([data-tip], .boton-icono[aria-label])[data-tip-abajo]::before {
+  bottom: auto;
+  top: calc(100% + 10px);
+  translate: -50% -6px;
+}
+/* Junto al borde derecho la ayuda se abre hacia la izquierda, para no salirse de la pantalla. */
+:is([data-tip], .boton-icono[aria-label])[data-tip-izq]::before {
+  left: auto;
+  right: 0;
+  translate: 0 6px;
+}
+:is([data-tip], .boton-icono[aria-label])[data-tip-izq][data-tip-abajo]::before {
+  translate: 0 -6px;
+}
+:is([data-tip], .boton-icono[aria-label])[data-tip-izq]:is(:hover, :focus-visible)::before {
+  translate: 0 0;
+}
+/* En la barra de herramientas la ayuda solo hace falta cuando el nombre no cabe y se ve solo el ícono. */
+@media (min-width: 1024px) {
+  .tip-angosto[data-tip]::before {
+    display: none;
+  }
+}
+:is([data-tip], .boton-icono[aria-label]):is(:hover, :focus-visible)::before {
+  opacity: 1;
+  translate: -50% 0;
+  transition-delay: 0.25s;
+}
+
+/* Chispas: al presionar una tecla crema saltan unas partículas del punto donde tocaste. */
+.chispa {
+  position: fixed;
+  z-index: 80;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  border-radius: 50%;
+  background: var(--amarillo-fuerte);
+  box-shadow: 0 0 6px var(--amarillo);
+  pointer-events: none;
+  animation: chispa 0.6s var(--suave) forwards;
+}
+@keyframes chispa {
+  to {
+    translate: var(--dx) var(--dy);
+    scale: 0.2;
+    opacity: 0;
+  }
+}
+
+/* Al abrir una herramienta, su contenido sube en cascada. */
+.entrada > :only-child > *,
+.entrada > :not(:only-child) {
+  animation: aparece 0.6s var(--suave) both;
+}
+.entrada > :only-child > :nth-child(2),
+.entrada > :not(:only-child):nth-child(2) {
+  animation-delay: 70ms;
+}
+.entrada > :only-child > :nth-child(3),
+.entrada > :not(:only-child):nth-child(3) {
+  animation-delay: 140ms;
+}
+.entrada > :only-child > :nth-child(n + 4),
+.entrada > :not(:only-child):nth-child(n + 4) {
+  animation-delay: 210ms;
+}
+@keyframes aparece {
+  from {
+    opacity: 0;
+    translate: 0 16px;
+    filter: blur(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

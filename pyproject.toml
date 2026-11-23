@@ -1,0 +1,33 @@
+[project]
+name = "orden-pc"
+version = "0.1.0"
+description = "Organizador local de archivos y apps"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.143.0",
+    "openpyxl>=3.1.5",
+    "pypdf>=6.20.0",
+    "python-docx>=1.2.0",
+    "python-pptx>=1.0.2",
+    "pywin32>=312",
+    "uvicorn>=0.54.0",
+]
+
+[project.scripts]
+orden-pc = "orden_pc.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "httpx2>=2.13.1",
+    "pytest>=9.1.1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# El Temp de Windows vive dentro de AppData, que es ruta protegida: las pruebas usan su propia carpeta.
+addopts = "--basetemp=pytest-tmp -m \"not papelera_real\""
+markers = ["papelera_real: usa la Papelera real de Windows con un archivo temporal (se pide con -m papelera_real)"]
